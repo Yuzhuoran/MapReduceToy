@@ -1,3 +1,33 @@
 syntax = "proto3";
 
 package masterworker;
+
+service Comm {
+	rpc MapReduceAlive (controlMessage) returns (replyMessage) {}
+}
+
+message controlMessage {
+	// 1: map; 2: reduce; 0:alive
+	string userId = 1;
+	uint32 type = 2;
+	uint32 mapperId = 3;
+	repeated fileInfo mapFiles = 4;
+	uint32 numOfOutput = 5;
+	uint32 reducerId = 6;
+	repeated string reduceFiles = 7
+	string outputDir = 8;
+}
+
+message replyMessage {
+	string userId = 1;
+	uint32 type = 2;
+	repeated string mapOutputFiles = 3;
+	string reduceOutputfiles = 4;
+	string reply = 5;
+}
+
+message fileInfo {
+ 	string filename = 1;
+	uint64 fileSize = 2
+	uint64 fileOffset = 3;
+}

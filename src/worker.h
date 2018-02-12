@@ -3,20 +3,59 @@
 #include <mr_task_factory.h>
 #include "mr_tasks.h"
 
+#include <grpc++/grpc++.h>
+#include <grpc/grpc.h>
+#include <grpc++/server.h>
+#include <grpc++/server_builder.h>
+#include <grpc++/server_context.h>
+#include <grpc/support/log.h>
+
+using grpc::Server;
+using grpc::ServerBuilder;
+using grpc::ServerContext;
+using grpc::Status;
+using grpc::ServerAsyncResponseWriter;
+using grpc::ServerCompletionQueue;
+
+#include "masterworker.grpc.pb.h"
+
+using std::string;
 
 /* CS6210_TASK: Handle all the task a Worker is supposed to do.
 	This is a big task for this project, will test your understanding of map reduce */
 class Worker {
 
 	public:
+
+		string ip_addr_port;
+
 		/* DON'T change the function signature of this constructor */
 		Worker(std::string ip_addr_port);
 
 		/* DON'T change this function's signature */
 		bool run();
 
+		~Worker() {
+			server_->Shutdown();
+			cq_->Shutdown();
+		}
+
 	private:
 		/* NOW you can add below, data members and member functions as per the need of your implementation*/
+		Comm::AsyncService service_;
+		std::unique_ptr<ServerCompletionQueue> cq_;
+		std::unique_ptr<Server> server_;
+
+		class CallData {
+			public:
+				CallData(Comm::AsyncService* service, ServerCompletionQueue* cq)
+				: service_(service), cq_(cq), responder_(&ctx_), status_(CREATE)
+				{
+					Proceed();
+				}
+
+			// ### Proceed();
+		}
 
 };
 
