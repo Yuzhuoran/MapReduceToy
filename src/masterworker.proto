@@ -3,7 +3,7 @@ syntax = "proto3";
 package masterworker;
 
 service Comm {
-	rpc MapReduceAlive (controlMessage) returns (replyMessage) {}
+	rpc AssignTask (controlMessage) returns (replyMessage) {}
 }
 
 message controlMessage {
@@ -14,20 +14,21 @@ message controlMessage {
 	repeated fileInfo mapFiles = 4;
 	uint32 numOfOutput = 5;
 	uint32 reducerId = 6;
-	repeated string reduceFiles = 7
+	repeated fileInfo reduceFiles = 7;
 	string outputDir = 8;
+	uint32 workId = 9;
 }
 
 message replyMessage {
 	string userId = 1;
 	uint32 type = 2;
-	repeated string mapOutputFiles = 3;
+	repeated string OutputFiles = 3;
 	string reduceOutputfiles = 4;
 	string reply = 5;
 }
 
 message fileInfo {
  	string filename = 1;
-	uint64 fileSize = 2
-	uint64 fileOffset = 3;
+	uint32 fileSize = 2;
+	uint32 fileOffset = 3;
 }

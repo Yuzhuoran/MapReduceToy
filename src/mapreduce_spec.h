@@ -19,18 +19,18 @@ struct MapReduceSpec {
 	uint32_t n_output_files;
 	uint32_t map_kilobytes;
 	string user_id;
-	uint64_t n_mappers;
+	uint32_t n_mappers;
 };
 
-inline uint64_t getNumMappers(vector<string> input_files, uint32_t map_kilobytes) {
-	uint64_t total = 0;
+inline uint32_t getNumMappers(vector<string> input_files, uint32_t map_kilobytes) {
+	int total = 0;
 	for(string filename : input_files) {
 		struct stat st;
-		if(stat(filename.c_str(), &st) != 0) {
+		if(stat(filename.c_str(), &st) == 0) {
 			total += st.st_size;
 		}
   	}
-	return total / map_kilobytes + 1;
+	return (uint32_t)(total / map_kilobytes + 1);
 	
 }
 
@@ -94,13 +94,13 @@ inline bool validate_mr_spec(const MapReduceSpec& mr_spec) {
 	}
 	for(string filename : mr_spec.input_files) {
 		struct stat st;
-		if(stat(filename.c_str(), &st) == 0) {
+		if(stat(filename.c_str(), &st) != 0) {
 			cout<<"Input file error: cannot access "<< filename << endl;
 			return false;
 		}
   	}
 	struct stat st;
-	if (!(stat(mr_spec.output_dir.c_str(), &st) == 0 && S_ISDIR(st.st_mode))) {
+	if (stat(mr_spec.output_dir.c_str(), &st) || S_ISDIR(st.st_mode) == 0) {
 		cout << "Output directory error" << endl;
 		return false;
 	}
