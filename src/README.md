@@ -1,16 +1,18 @@
-# cs6210Project4
+# Implementation
+
 MapReduce Infrastructure
 
-1. how to run:
+## how to run:
 First, create a file name "intermediate" in the "test" folder parallel ot "input" and "output". This is to store the intermedaite files.
 
 The next step is the run the test followed by the structure description
 
 You need to manually remove the intermediate file and output file in the "intermedaite" folder and "output" folder.
 
-2. Implementation Thoughts
+## Implementation Thoughts
 
-a. proto
+### proto
+
 the proto consists two parts, the request and reply. Also define a data structure to describe the shards
 
 The request contains 
@@ -21,7 +23,7 @@ The request contains
 
 The reply mainly contains a vector of string which is the file name to return the master
 
-b. Master.h
+### Master.h
 
 a masterclient class is created in the master class to make the rpc calls. The master maintains a vector of these clients to make call when assigning the task.
 besides, it has two queue and one set. one queue is to store the pending taks to assign, and another one is to store the index of available client to make calls.
@@ -33,19 +35,18 @@ whole intermediate file as a portion of the shards while the shard can contains 
 
 A better implementation could use multi-thread to handle the calls and we could improve that in the future.
 
-c. Worker.h
+### Worker.h
 
 use calldata to handle the request from master. The implementation is similar to last project store.cc.
 The worker will reply the filenames in a vector to master to indicate the location and names of the intermediate files.
 
-d. mr_task.h
+### mr_task.h
 
 complete the emit function. The emit function will name a file as "intermediate" + " workerid" + "index", where index is a hash integer value for the first char of the key string mod 
 by the total size of output. We use a set to store the file names and have a function to return all the intermediate files or output files for the rpc reply.
 
 
-3. Team member
+## Team member
 
-Zhuoran Yu(zyu93): master.h, worker.h, mr_task.h
-Guangxu Chen(gchen96) spec.h, shard.h, proto
+Zhuoran Yu and GuangxuChen
 
